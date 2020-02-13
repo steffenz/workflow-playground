@@ -4,6 +4,7 @@ on:
     - cron: '*/5 * * * *'
 jobs:
   check_for_changes: 
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     name: Merge develop to master if changed
     steps: 
