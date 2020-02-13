@@ -1,8 +1,7 @@
 name: Cron
-# on:
-#   schedule:
-#     - cron: '*/5 * * * *'
-on: [push]
+on:
+  schedule:
+    - cron: '*/5 * * * *'
 jobs:
   check_for_changes: 
     runs-on: ubuntu-latest
