@@ -5,7 +5,15 @@ on:
 jobs:
   check_for_changes: 
     runs-on: ubuntu-latest
-    name: Merge develop into master
+    name: Merge develop to master if changed
     steps: 
+      - name: Checkout develop repository
+        uses: actions/checkout@v2
+        with: 
+          ref: 'develop'
+      
+      - name: 'Compare branches'
+        run: 'git rev-list --count master..develop'
+
       - name: Tell time
         run: echo "$(date +'%d/%m/%Y %H:%M:%S:%3N')"
