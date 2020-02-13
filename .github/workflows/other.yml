@@ -1,0 +1,11 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  start_release:
+    runs-on: ubuntu-latest
+    name: Release originated from merge job
+    steps:
+      - name: "Just say hello"
+        run: echo "Hello world. It worked"

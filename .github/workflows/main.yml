@@ -5,7 +5,26 @@ on:
 jobs:
   check_for_changes: 
     runs-on: ubuntu-latest
-    name: Merge develop into master
+    name: Merge develop to master if changed
     steps: 
-      - name: Tell time
-        run: echo "$(date +'%d/%m/%Y %H:%M:%S:%3N')"
+      - name: Checkout develop repository
+        uses: actions/checkout@v2
+        with: 
+          ref: 'develop'
+          fetch-depth: '0'
+
+      - name: 'Fetch master branch from origin'
+        run: git fetch origin master:master
+      
+      - name: 'Compare branches'
+        id: compare
+        run : echo "##[set-output name=commits_ahead;]$(git rev-list --count master..develop)"
+
+      - name: 'Merge develop branches into master'
+        if: steps.compare.outputs.commits_ahead > 0
+        run: |
+          git config user.name 'Merge Bot'
+          git config user.email 'noreply@test.com'
+          git checkout master
+          git merge --no-edit develop
+          git push origin master
