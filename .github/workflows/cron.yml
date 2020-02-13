@@ -1,0 +1,31 @@
+name: Cronjob
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+jobs:
+  check_for_changes: 
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    name: Merge develop to master if changed
+    steps: 
+      - name: Checkout develop repository
+        uses: actions/checkout@v2
+        with: 
+          ref: 'develop'
+          fetch-depth: '0'
+
+      - name: 'Fetch master branch from origin'
+        run: git fetch origin master:master
+      
+      - name: 'Compare branches'
+        id: compare
+        run : echo "##[set-output name=commits_ahead;]$(git rev-list --count master..develop)"
+
+      - name: 'Merge develop branches into master'
+        if: steps.compare.outputs.commits_ahead > 0
+        run: |
+          git config user.name 'Merge Bot'
+          git config user.email 'noreply@test.com'
+          git checkout master
+          git merge --no-edit develop
+          git push origin master
